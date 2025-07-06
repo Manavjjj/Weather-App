@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Weather Finder</h1>
+    
+    <div class="search-box">
+      <input type="text" id="location-input" placeholder="Enter city name...">
+      <button id="search-btn">Search</button>
+    </div>
+
+    <div class="weather-card hidden" id="weather-card">
+      <div class="weather-header">
+        <h2 id="city-name">City Name</h2>
+        <img id="weather-icon" src="" alt="Weather Icon">
+      </div>
+      <div class="weather-details">
+        <p id="temperature">--°C</p>
+        <p id="weather-desc">Weather Description</p>
+        <p id="humidity">Humidity: --%</p>
+      </div>
+    </div>
+
+    <div class="error hidden" id="error">
+      <p>Location not found. Please try again.</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
