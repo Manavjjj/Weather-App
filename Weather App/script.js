@@ -1,5 +1,5 @@
 // API Configuration
-const API_KEY = 'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API key}'; // Replace with your actual API key
+const API_KEY = '88d2c1ca9ddd7fad003b66674a819a15'; 
 const BASE_URL = 'https://api.openweathermap.org/data/2.5/weather';
 
 // DOM Elements
@@ -13,23 +13,33 @@ const temperature = document.getElementById('temperature');
 const weatherDesc = document.getElementById('weather-desc');
 const humidity = document.getElementById('humidity');
 
-// Fetch Weather Data
 async function fetchWeather(city) {
   try {
+    // Show loading state
+    weatherCard.classList.add('hidden');
+    errorElement.classList.add('hidden');
+    document.getElementById('loading').classList.remove('hidden');
+    
     const response = await fetch(`${BASE_URL}?q=${city}&units=metric&appid=${API_KEY}`);
     
     if (!response.ok) {
-      throw new Error('Location not found');
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Location not found');
     }
     
     const data = await response.json();
     displayWeather(data);
   } catch (error) {
-    showError();
+    console.error('Weather fetch error:', error);
+    showError(error.message.includes('404') 
+      ? 'City not found. Try "City,Country" format like: London,UK' 
+      : error.message
+    );
+  } finally {
+    document.getElementById('loading').classList.add('hidden');
   }
 }
 
-// Display Weather Data
 function displayWeather(data) {
   const { name, main, weather } = data;
   
@@ -44,8 +54,11 @@ function displayWeather(data) {
   errorElement.classList.add('hidden');
 }
 
-// Show Error Message
-function showError() {
+function showError(message) {
+  errorElement.innerHTML = `
+    <p>${message}</p>
+    <small>Try formats like: "Paris,FR" or "New York,US"</small>
+  `;
   weatherCard.classList.add('hidden');
   errorElement.classList.remove('hidden');
 }
@@ -53,16 +66,14 @@ function showError() {
 // Event Listeners
 searchBtn.addEventListener('click', () => {
   const location = locationInput.value.trim();
-  if (location) {
-    fetchWeather(location);
-  }
+  if (location) fetchWeather(location);
 });
 
 locationInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    const location = locationInput.value.trim();
-    if (location) {
-      fetchWeather(location);
-    }
+  if (e.key === 'Enter' && locationInput.value.trim()) {
+    fetchWeather(locationInput.value.trim());
   }
 });
+
+// Initial test
+fetchWeather("London,UK");
